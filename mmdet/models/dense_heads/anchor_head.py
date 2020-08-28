@@ -647,7 +647,12 @@ class AnchorHead(BaseDenseHead):
             # BG cat_id: num_class
             padding = mlvl_scores.new_zeros(mlvl_scores.shape[0], 1)
             mlvl_scores = torch.cat([mlvl_scores, padding], dim=1)
-        det_bboxes, det_labels = multiclass_nms(mlvl_bboxes, mlvl_scores,
-                                                cfg.score_thr, cfg.nms,
-                                                cfg.max_per_img)
-        return det_bboxes, det_labels
+        # set a `aug_test_flag` to identify whether in the `aug_test` mode
+        aug_test_flag = cfg.get('aug_test', False)
+        if aug_test_flag:
+            return mlvl_bboxes, mlvl_scores
+        else:
+            det_bboxes, det_labels = multiclass_nms(mlvl_bboxes, mlvl_scores,
+                                                    cfg.score_thr, cfg.nms,
+                                                    cfg.max_per_img)
+            return det_bboxes, det_labels

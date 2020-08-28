@@ -179,7 +179,7 @@ def main():
             for key in ['interval', 'tmpdir', 'start', 'gpu_collect']:
                 eval_kwargs.pop(key, None)
             eval_kwargs.update(dict(metric=args.eval, **kwargs))
-            print(dataset.evaluate(outputs, **eval_kwargs))
+            print(dataset.evaluate(outputs, **eval_kwargs, cfg=cfg))
 
 
 if __name__ == '__main__':

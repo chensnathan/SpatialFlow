@@ -120,7 +120,7 @@ def train_detector(model,
             shuffle=False)
         eval_cfg = cfg.get('evaluation', {})
         eval_hook = DistEvalHook if distributed else EvalHook
-        runner.register_hook(eval_hook(val_dataloader, **eval_cfg))
+        runner.register_hook(eval_hook(val_dataloader, cfg=cfg, **eval_cfg))
 
     # user-defined hooks
     if cfg.get('custom_hooks', None):

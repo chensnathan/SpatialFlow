@@ -185,12 +185,14 @@ class LoadAnnotations(object):
                  with_label=True,
                  with_mask=False,
                  with_seg=False,
+                 map_seg_cats=True,
                  poly2mask=True,
                  file_client_args=dict(backend='disk')):
         self.with_bbox = with_bbox
         self.with_label = with_label
         self.with_mask = with_mask
         self.with_seg = with_seg
+        self.map_seg_cats = map_seg_cats
         self.poly2mask = poly2mask
         self.file_client_args = file_client_args.copy()
         self.file_client = None
@@ -297,6 +299,25 @@ class LoadAnnotations(object):
         results['mask_fields'].append('gt_masks')
         return results
 
+    def _map_seg_cats(self, results):
+        if self.with_seg and self.map_seg_cats:
+            gt_seg = results['gt_semantic_seg']
+            shape = gt_seg.shape
+            seg2label = results['ann_info']['seg2label']
+            seg_labels = np.zeros(shape[:2], dtype=np.uint8)
+            for seg_cat, label in seg2label.items():
+                if len(shape) == 3:
+                    m = np.all(
+                        gt_seg == np.array(seg_cat).reshape(1, 1, 3), axis=2)
+                else:
+                    m = gt_seg == seg_cat
+                seg_labels[m] = label
+            # add ignore label 255, and other labels are 0-based
+            seg_labels += 255
+            gt_seg = seg_labels
+            results['gt_semantic_seg'] = gt_seg
+        return results
+
     def _load_semantic_seg(self, results):
         """Private function to load semantic segmentation annotations.
 
@@ -315,6 +336,7 @@ class LoadAnnotations(object):
         img_bytes = self.file_client.get(filename)
         results['gt_semantic_seg'] = mmcv.imfrombytes(
             img_bytes, flag='unchanged').squeeze()
+        results = self._map_seg_cats(results)
         results['seg_fields'].append('gt_semantic_seg')
         return results
 

@@ -47,7 +47,8 @@ def merge_aug_proposals(aug_proposals, img_metas, rpn_test_cfg):
     return merged_proposals
 
 
-def merge_aug_bboxes(aug_bboxes, aug_scores, img_metas, rcnn_test_cfg):
+def merge_aug_bboxes(aug_bboxes, aug_scores, img_metas, rcnn_test_cfg,
+                     return_mean=True):
     """Merge augmented detection bboxes and scores.
 
     Args:
@@ -68,11 +69,17 @@ def merge_aug_bboxes(aug_bboxes, aug_scores, img_metas, rcnn_test_cfg):
         bboxes = bbox_mapping_back(bboxes, img_shape, scale_factor, flip,
                                    flip_direction)
         recovered_bboxes.append(bboxes)
-    bboxes = torch.stack(recovered_bboxes).mean(dim=0)
+    if return_mean:
+        bboxes = torch.stack(recovered_bboxes).mean(dim=0)
+    else:
+        bboxes = torch.cat(recovered_bboxes, dim=0)
     if aug_scores is None:
         return bboxes
     else:
-        scores = torch.stack(aug_scores).mean(dim=0)
+        if return_mean:
+            scores = torch.stack(aug_scores).mean(dim=0)
+        else:
+            scores = torch.cat(aug_scores, dim=0)
         return bboxes, scores
 
 
