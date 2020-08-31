@@ -174,6 +174,8 @@ class FCNMaskHead(nn.Module):
         device = mask_pred.device
         cls_segms = [[] for _ in range(self.num_classes)
                      ]  # BG is not included in num_classes
+        if len(mask_pred) == 0:
+            return cls_segms
         bboxes = det_bboxes[:, :4]
         labels = det_labels
 

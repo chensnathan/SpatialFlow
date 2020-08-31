@@ -186,7 +186,13 @@ class SpatialFlow(BaseDetector):
         mask_feats = self.mask_roi_extractor(
             mask_roi_feats[:len(self.mask_roi_extractor.featmap_strides)],
             mask_rois)
-        mask_pred = self.mask_head(mask_feats)
+        # some times rois is an empty tensor
+        if mask_feats.shape[0] == 0:
+            mask_pred = mask_feats.new_zeros(
+                mask_feats.size(0), mask_feats.size(1),
+                2 * mask_feats.size(2), 2 * mask_feats.size(3))
+        else:
+            mask_pred = self.mask_head(mask_feats)
         segm_results = []
         for img_id, meta in enumerate(img_meta):
             idx_img = mask_rois[:, 0] == img_id
