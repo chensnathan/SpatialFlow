@@ -62,10 +62,10 @@ def merge_aug_bboxes(aug_bboxes, aug_scores, img_metas, rcnn_test_cfg,
     """
     recovered_bboxes = []
     for bboxes, img_info in zip(aug_bboxes, img_metas):
-        img_shape = img_info[0]['img_shape']
-        scale_factor = img_info[0]['scale_factor']
-        flip = img_info[0]['flip']
-        flip_direction = img_info[0]['flip_direction']
+        img_shape = img_info['img_shape']
+        scale_factor = img_info['scale_factor']
+        flip = img_info['flip']
+        flip_direction = img_info['flip_direction']
         bboxes = bbox_mapping_back(bboxes, img_shape, scale_factor, flip,
                                    flip_direction)
         recovered_bboxes.append(bboxes)
@@ -104,8 +104,8 @@ def merge_aug_masks(aug_masks, img_metas, rcnn_test_cfg, weights=None):
     """
     recovered_masks = []
     for mask, img_info in zip(aug_masks, img_metas):
-        flip = img_info[0]['flip']
-        flip_direction = img_info[0]['flip_direction']
+        flip = img_info['flip']
+        flip_direction = img_info['flip_direction']
         if flip:
             if flip_direction == 'horizontal':
                 mask = mask[:, :, :, ::-1]

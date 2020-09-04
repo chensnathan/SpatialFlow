@@ -352,17 +352,6 @@ class CocoDataset(CustomDataset):
         for idx in range(len(self)):
             img_id = self.img_ids[idx]
             det, seg, stuff = results[idx]
-            # Solve the bug when there is no results
-            if len(det) == 0:
-                data = dict()
-                data['image_id'] = img_id
-                data['bbox'] = []
-                data['score'] = 0.
-                data['category_id'] = 0
-                bbox_json_results.append(data)
-                data['segmentation'] = []
-                segm_json_results.append(data)
-                continue
             for thing_label in range(len(det)):
                 # bbox results
                 bboxes = det[thing_label]

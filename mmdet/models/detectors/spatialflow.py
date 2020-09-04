@@ -225,6 +225,7 @@ class SpatialFlow(BaseDetector):
     def aug_test(self, imgs, img_metas, rescale=False):
         """Test with augmentation."""
         single_stage_cfg = self.test_cfg.single_stage
+        single_stage_cfg.update(dict(aug_test=True))
         imgs_per_gpu = len(img_metas[0])
         aug_bboxes = [[] for _ in range(imgs_per_gpu)]
         aug_scores = [[] for _ in range(imgs_per_gpu)]
@@ -301,10 +302,23 @@ class SpatialFlow(BaseDetector):
                 aug_masks[img_id].append(mask_pred_img_np)
 
         segm_results = []
-        for aug_mask, aug_img_meta in zip(aug_masks, aug_img_metas):
+        for det_result, aug_mask, aug_img_meta in zip(
+                det_results, aug_masks, aug_img_metas):
+            det_bboxes, det_labels = det_result
             merged_masks = merge_aug_masks(aug_mask, aug_img_meta,
                                            self.test_cfg.single_stage_mask)
-            segm_results.append(merged_masks)
+            # perform `get_seg_masks` here for `merged_masks`
+            # `ori_shape` for all augmented images are the same here
+            ori_shape = aug_img_meta[0]['ori_shape']
+            segm_result = self.mask_head.get_seg_masks(
+                merged_masks,
+                det_bboxes,
+                det_labels,
+                self.test_cfg.single_stage_mask,
+                ori_shape,
+                scale_factor=1.0,
+                rescale=False)
+            segm_results.append(segm_result)
 
         # stuff
         stuff_results = self.stuff_head.get_stuff_map_aug(

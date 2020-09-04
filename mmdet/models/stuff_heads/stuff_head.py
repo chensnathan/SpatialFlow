@@ -260,6 +260,5 @@ class StuffHead(nn.Module):
 
             stuffs = stuff_map.astype(np.uint8)
             stuff_segms.append(
-                dict(stuff_map=stuffs,
-                     img_shape=img_metas[0][0]['ori_shape'][:2]))
+                dict(stuff_map=stuffs, img_shape=(img_w, img_h)))
         return stuff_segms
