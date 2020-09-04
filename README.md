@@ -17,7 +17,7 @@
 ## Modification for `MMCV`
 - Comment out [this line](https://github.com/open-mmlab/mmcv/blob/master/mmcv/fileio/handlers/json_handler.py#L27) 
 in mmcv to use `MyJsonEncoder` instead for `mmcv.dump`.
-- Add a registry for `ModulatedDeformConv2d` as follow
+- Add a registry for `ModulatedDeformConv2d` in [this line]((https://github.com/open-mmlab/mmcv/blob/master/mmcv/ops/modulated_deform_conv.py#L147)) as follow
 ```python
 @CONV_LAYERS.register_module('ModulatedDeformConv')
 class ModulatedDeformConv2d(nn.Module):
@@ -43,27 +43,35 @@ def forward(self, x, offset=None, mask=None, activate=True, norm=True):
 
 ### Panoptic Segmentation on COCO validation
 
-#### [**SpatialFlow-res50**](https://1drv.ms/u/s!AgM0VtBH3kV9ilUOYM2Hd7EQseB1?e=jQeiu5)
+#### **SpatialFlow-res50** ([download](https://1drv.ms/u/s!AgM0VtBH3kV9ilUOYM2Hd7EQseB1?e=jQeiu5))
 |  | PQ | SQ | RQ | N |
 | ------ |------ | ------ | ------ | ------ |
 | All | 41.8 | 78.7 | 50.9 | 133 |
 | Things | 48.3 | 82.0 | 58.0 | 80 |
 | Stuff | 31.9 | 73.7 | 40.2 | 53 |
 
-#### [**SpatialFlow-res101**](https://1drv.ms/u/s!AgM0VtBH3kV9ilUOYM2Hd7EQseB1?e=jQeiu5)
+#### **SpatialFlow-res101** ([download](https://1drv.ms/u/s!AgM0VtBH3kV9ilUOYM2Hd7EQseB1?e=jQeiu5))
 |  | PQ | SQ | RQ | N |
 | ------ |------ | ------ | ------ | ------ |
 | All | 43.4 | 79.6 | 52.6 | 133 |
 | Things | 50.4 | 82.4 | 60.3 | 80 |
 | Stuff | 32.8 | 75.4 | 41.0 | 53 |
 
-#### [**SpatialFlow-res101-DCN-MultiScale**]()
+#### **SpatialFlow-res101-DCN-MultiScale** ([download](https://1drv.ms/u/s!AgM0VtBH3kV9ilUOYM2Hd7EQseB1?e=jQeiu5))
+|  | PQ | SQ | RQ | N |
+| ------ |------ | ------ | ------ | ------ |
+| All | 48.0 | 81.3 | 57.5 | 133 |
+| Things | 55.0 | 82.5 | 65.2 | 80 |
+| Stuff | 37.6 | 79.5 | 46.0 | 53 |
 
 *Disclaimer:*
 
 - This is a reimplementation using `mmdetv2` and the PQ is slightly
  higher than the one of our original paper (~0.9% PQ).
-- More models are coming soon.
+- We use `fp16 training` for `res101-DCN-Multiscale`.
+- All the results listed here are measured on COCO val split. According to 
+our experimental results, the performance on COCO test-dev will be slightly 
+higher than the one on COCO val (~0.5% PQ).
 
 ## Usage
 
@@ -103,5 +111,6 @@ Please consider citing our papers in your publications if the project helps your
   Cheng, Jian},
   journal={IEEE Transactions on Circuits and Systems for Video Technology}, 
   title={SpatialFlow: Bridging all Task for Panoptic Segmentation}, 
-  year={2020}}
+  year={2020}
+  doi={10.1109/TCSVT.2020.3020257}}
 ```
