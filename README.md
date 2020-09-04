@@ -17,7 +17,7 @@
 ## Modification for `MMCV`
 - Comment out [this line](https://github.com/open-mmlab/mmcv/blob/master/mmcv/fileio/handlers/json_handler.py#L27) 
 in mmcv to use `MyJsonEncoder` instead for `mmcv.dump`.
-- Add a registry for `ModulatedDeformConv2d` in [this line]((https://github.com/open-mmlab/mmcv/blob/master/mmcv/ops/modulated_deform_conv.py#L147)) as follow
+- Add a registry for `ModulatedDeformConv2d` in [this line](https://github.com/open-mmlab/mmcv/blob/master/mmcv/ops/modulated_deform_conv.py#L147) as follow
 ```python
 @CONV_LAYERS.register_module('ModulatedDeformConv')
 class ModulatedDeformConv2d(nn.Module):
@@ -60,9 +60,9 @@ def forward(self, x, offset=None, mask=None, activate=True, norm=True):
 #### **SpatialFlow-res101-DCN-MultiScale** ([download](https://1drv.ms/u/s!AgM0VtBH3kV9ilUOYM2Hd7EQseB1?e=jQeiu5))
 |  | PQ | SQ | RQ | N |
 | ------ |------ | ------ | ------ | ------ |
-| All | 48.0 | 81.3 | 57.5 | 133 |
-| Things | 55.0 | 82.5 | 65.2 | 80 |
-| Stuff | 37.6 | 79.5 | 46.0 | 53 |
+| All | **48.0** | 81.3 | 57.5 | 133 |
+| Things | **55.0** | 82.5 | 65.2 | 80 |
+| Stuff | **37.6** | 79.5 | 46.0 | 53 |
 
 *Disclaimer:*
 
