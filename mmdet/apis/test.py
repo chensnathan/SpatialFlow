@@ -52,12 +52,10 @@ def single_gpu_test(model,
                     out_file=out_file,
                     score_thr=show_score_thr)
 
-        results.append(result)
-
         batch_size = len(data['img_metas'][0].data)
         for _ in range(batch_size):
             prog_bar.update()
-    results = encode_segms(results, dataset)
+        results.append(encode_segms([result], dataset)[0])
     return results
 
 
@@ -90,7 +88,6 @@ def multi_gpu_test(model, data_loader, tmpdir=None, gpu_collect=False):
     for i, data in enumerate(data_loader):
         with torch.no_grad():
             result = model(return_loss=False, rescale=True, **data)
-        results.append(result)
 
         if rank == 0:
             batch_size = (
@@ -98,8 +95,8 @@ def multi_gpu_test(model, data_loader, tmpdir=None, gpu_collect=False):
                 if 'img_meta' in data else len(data['img_metas'][0].data))
             for _ in range(batch_size * world_size):
                 prog_bar.update()
+        results.append(encode_segms([result], dataset)[0])
 
-    results = encode_segms(results, dataset)
     # collect results from all ranks
     if gpu_collect:
         results = collect_results_gpu(results, len(dataset))
