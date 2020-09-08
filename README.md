@@ -64,6 +64,15 @@ def forward(self, x, offset=None, mask=None, activate=True, norm=True):
 | Things | **55.0** | 82.5 | 65.2 | 80 |
 | Stuff | **37.6** | 79.5 | 46.0 | 53 |
 
+### Panoptic Segmentation on COCO test-dev
+
+#### **SpatialFlow-res101-DCN-MultiScale** ([download](https://1drv.ms/u/s!AgM0VtBH3kV9ilUOYM2Hd7EQseB1?e=jQeiu5))([test_dev_results](https://1drv.ms/u/s!AgM0VtBH3kV9ilUOYM2Hd7EQseB1?e=jQeiu5))
+|  | PQ | SQ | RQ | N |
+| ------ |------ | ------ | ------ | ------ |
+| All | **48.5** | 81.8 | 58.1 | 133 |
+| Things | **55.5** | 83.3 | 65.9 | 80 |
+| Stuff | **37.9** | 79.5 | 46.4 | 53 |
+
 *Disclaimer:*
 
 - This is a reimplementation using `mmdetv2` and the PQ is slightly
