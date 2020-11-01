@@ -16,8 +16,7 @@
 
 ## Modification for `MMCV`
 - Comment out  the line `kwargs.setdefault('default', set_default)` in the 
-function `dump_to_fileobj` in [mmcv](https://github.com/open-mmlab/mmcv/blob/master/mmcv/fileio/handlers/json_handler.py) to use `MyJsonEncoder` instead for `mmcv
-.dump`.
+function `dump_to_fileobj` in [mmcv](https://github.com/open-mmlab/mmcv/blob/master/mmcv/fileio/handlers/json_handler.py) to use `MyJsonEncoder` instead for `mmcv.dump`.
 - Add a registry for `ModulatedDeformConv2d` in [this line](https://github.com/open-mmlab/mmcv/blob/master/mmcv/ops/modulated_deform_conv.py#L147) as follow
 ```python
 @CONV_LAYERS.register_module('ModulatedDeformConv')
