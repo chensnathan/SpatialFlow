@@ -9,16 +9,15 @@
 > *arXiv preprint ([arXiv 1910.08787](https://arxiv.org/abs/1910.08787v3))*
 
 ## Installation
-- We adopt the codebase **mmdetection** (v2.3.0) with hash code 
+- We adopt the codebase **mmdetection (v2.3.0)** with hash code 
 [9596b9a](https://github.com/open-mmlab/mmdetection/tree/9596b9a4c916ae601f9a8a641c3a0ea47265abec).
 - Please follow the [guide](docs/install.md) to install **mmdet**.
 - To prepare the dataset, please follow the [guidance](tools/panoptic_converters/README.md) of dataset converters.
 
 ## Modification for `MMCV` (v1.0.5 or v1.1.0)
-- For v1.1.0, Comment out  the line `kwargs.setdefault('default', set_default)`
+- For **v1.1.0**, Comment out  the line `kwargs.setdefault('default', set_default)`
  in the function `dump_to_fileobj` in [mmcv](https://github.com/open-mmlab/mmcv/blob/master/mmcv/fileio/handlers/json_handler.py) to use `MyJsonEncoder` instead for `mmcv.dump`.
-- Add a cregistry for `ModulatedDeformConv2d` in [this line](https://github
-.com/open-mmlab/mmcv/blob/master/mmcv/ops/modulated_deform_conv.py#L147) as follow
+- Add a cregistry for `ModulatedDeformConv2d` in [this line](https://github.com/open-mmlab/mmcv/blob/master/mmcv/ops/modulated_deform_conv.py#L147) as follow
 ```python
 @CONV_LAYERS.register_module('ModulatedDeformConv')
 class ModulatedDeformConv2d(nn.Module):
