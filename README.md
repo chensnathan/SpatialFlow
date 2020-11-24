@@ -9,15 +9,16 @@
 > *arXiv preprint ([arXiv 1910.08787](https://arxiv.org/abs/1910.08787v3))*
 
 ## Installation
-- We adopt the codebase **mmdetection** with hash code 
+- We adopt the codebase **mmdetection** (v2.3.0) with hash code 
 [9596b9a](https://github.com/open-mmlab/mmdetection/tree/9596b9a4c916ae601f9a8a641c3a0ea47265abec).
 - Please follow the [guide](docs/install.md) to install **mmdet**.
 - To prepare the dataset, please follow the [guidance](tools/panoptic_converters/README.md) of dataset converters.
 
-## Modification for `MMCV`
-- Comment out  the line `kwargs.setdefault('default', set_default)` in the 
-function `dump_to_fileobj` in [mmcv](https://github.com/open-mmlab/mmcv/blob/master/mmcv/fileio/handlers/json_handler.py) to use `MyJsonEncoder` instead for `mmcv.dump`.
-- Add a registry for `ModulatedDeformConv2d` in [this line](https://github.com/open-mmlab/mmcv/blob/master/mmcv/ops/modulated_deform_conv.py#L147) as follow
+## Modification for `MMCV` (v1.0.5 or v1.1.0)
+- For v1.1.0, Comment out  the line `kwargs.setdefault('default', set_default)`
+ in the function `dump_to_fileobj` in [mmcv](https://github.com/open-mmlab/mmcv/blob/master/mmcv/fileio/handlers/json_handler.py) to use `MyJsonEncoder` instead for `mmcv.dump`.
+- Add a cregistry for `ModulatedDeformConv2d` in [this line](https://github
+.com/open-mmlab/mmcv/blob/master/mmcv/ops/modulated_deform_conv.py#L147) as follow
 ```python
 @CONV_LAYERS.register_module('ModulatedDeformConv')
 class ModulatedDeformConv2d(nn.Module):
@@ -26,17 +27,22 @@ class ModulatedDeformConv2d(nn.Module):
 - Add support for `ModulatedDeformConv2d` in `ConvModule` [here](https://github.com/open-mmlab/mmcv/blob/master/mmcv/cnn/bricks/conv_module.py#L180)
 ```python
 def forward(self, x, offset=None, mask=None, activate=True, norm=True):
-        for layer in self.order:
-            if layer == 'conv':
-                if self.with_explicit_padding:
-                    x = self.padding_layer(x)
-                if offset is not None:
-                    if mask is not None:
-                        x = self.conv(x, offset, mask)
-                    else:
-                        x = self.conv(x, offset)
+    for layer in self.order:
+        if layer == 'conv':
+            if self.with_explicit_padding:
+                x = self.padding_layer(x)
+            if offset is not None:
+                if mask is not None:
+                    x = self.conv(x, offset, mask)
                 else:
-                    x = self.conv(x)
+                    x = self.conv(x, offset)
+            else:
+                x = self.conv(x)
+        elif layer == 'norm' and norm and self.with_norm:
+            x = self.norm(x)
+        elif layer == 'act' and activate and self.with_activation:
+            x = self.activate(x)
+    return x
 ```
 
 ## Main results
